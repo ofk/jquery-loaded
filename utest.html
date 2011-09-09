@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>utest</title>
+</head>
+<!-- use photos by http://www.public-domain-image.com/fauna-animals-public-domain-images-pictures/rhinoceros-public-domain-images-pictures/ -->
+<body>
+<div id="invisible" style="position:absolute;top:0;left:-100%;width:50%;overflow:hidden;">
+<img id="img5" src="tmp/rhino5.jpg" />
+<img id="img6" src="tmp/rhino6.jpg" width="100" height="100" />
+<img id="img7" src="tmp/rhino7.jpg" />
+</div>
+</body>
+<script src="https://raw.github.com/ofk/utest/master/utest.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+<script src="jquery.loaded.min.js"></script>
+<script>
+
+window.onload = function () {
+
+// -----------------------------------------------------------------------------
+
+utest('jQuery.fn.loaded', [
+	function () { return [[ utest.type(jQuery.fn.loaded), 'function' ]]; },
+	function () { return [[ utest.type(jQuery.loaded), 'function' ]]; },
+	function () { return [[ utest.type($('body').loaded), 'function' ]]; },
+	function () { return [[ $('body').loaded().jquery ]]; },
+	function () { return [[ utest.type($('body').loaded().success), 'function' ]]; },
+	function () { return [[ utest.type($('body').loaded().error), 'function' ]]; },
+	function () { return [[ utest.type($('body').loaded().complete), 'function' ]]; },
+	function () { return [[ $('body').loaded().success().jquery ]]; },
+	function () { return [[ $('body').loaded().error().jquery ]]; },
+	function () { return [[ $('body').loaded().complete().jquery ]]; }
+]);
+
+// -----------------------------------------------------------------------------
+
+var ts = '?' + (+new Date);
+
+var	simg0 = '',
+	$img0 = $('<img>')
+		.attr('src', 'tmp/rhino0.jpg' + ts) // not found
+		.loaded({
+			complete: function () { simg0 += 'c'; },
+			success: function () { simg0 += 's['+this.naturalWidth+','+this.naturalHeight+']'; },
+			error: function () { simg0 += 'e'; }
+		}),
+	simg1 = '',
+	$img1 = $('<img>')
+		.attr('src', 'tmp/rhino1.jpg' + ts)
+		.loaded({
+			complete: function () { simg1 += 'c'; },
+			success: function () { simg1 += 's['+this.naturalWidth+','+this.naturalHeight+']'; },
+			error: function () { simg1 += 'e'; }
+		}),
+	simg2 = '',
+	simg3 = '',
+	setStat23 = function (elem, s) {
+		if (/2\.jpg\?\d+$/.test(elem.src)) {
+			simg2 += s;
+		}
+		else {
+			simg3 += s;
+		}
+	},
+	$img23 = $('<img>')
+		.attr('src', 'tmp/rhino2.jpg' + ts)
+		.add($('<img>').attr('src', 'tmp/rhino3.jpg' + ts))
+		.loaded({
+			complete: function () { setStat23(this, 'c'); },
+			success: function () { setStat23(this, 's['+this.naturalWidth+','+this.naturalHeight+']'); },
+			error: function () { setStat23(this, 'e'); }
+		}),
+	simg4 = '',
+	$img4 = $('<img>')
+		.attr('src', 'tmp/rhino4.jpg' + ts)
+		.loaded({
+			complete: function () { simg4 += 'c'; },
+			success: function () { simg4 += 's['+this.naturalWidth+','+this.naturalHeight+']'; },
+			error: function () { simg4 += 'e'; },
+			timeout: 1
+		}),
+	simg5 = '',
+	$img5 = $('#img5')
+		.loaded({
+			complete: function () { simg5 += 'c'; },
+			success: function () { simg5 += 's['+this.naturalWidth+','+this.naturalHeight+']'; },
+			error: function () { simg5 += 'e'; }
+		}),
+	simg6 = '',
+	$img6 = $('#img6')
+		.loaded({
+			complete: function () { simg6 += 'c'; },
+			success: function () { simg6 += 's['+this.naturalWidth+','+this.naturalHeight+']'; },
+			error: function () { simg6 += 'e'; }
+		});
+	simg7 = '',
+	$img7 = $('#img7')
+		.loaded({
+			complete: function () { simg7 += 'c'; },
+			success: function () { simg7 += 's['+this.naturalWidth+','+this.naturalHeight+']'; },
+			error: function () { simg7 += 'e'; }
+		});
+
+utest('jQuery.loaded.img', [
+	function () { return [[ $img0.length, 1 ]]; },
+	function (test) { setTimeout(function () { test([ simg0, 'ec' ]); }, 1000); },
+	function () { return [[ $img1.length, 1 ]]; },
+	function (test) { setTimeout(function () { test([ simg1, 's[3072,2304]c' ]); }, 1000); },
+	function (test) { setTimeout(function () {
+		var	simg1 = '';
+		$img1.loaded({
+			complete: function () { simg1 += 'c'; },
+			success: function () { simg1 += 's['+this.naturalWidth+','+this.naturalHeight+']'; },
+			error: function () { simg1 += 'e'; }
+		});
+		setTimeout(function () { test([ simg1, 's[3072,2304]c' ]); }, 1000);
+	}, 1000); },
+	function () { return [[ $img23.length, 2 ]]; },
+	function (test) { setTimeout(function () { test([ simg2, 's[1600,1200]c' ]); }, 1000); },
+	function (test) { setTimeout(function () { test([ simg3, 's[3072,2304]c' ]); }, 1000); },
+	function () { return [[ $img4.length, 1 ]]; },
+	function (test) { setTimeout(function () { test([ simg4, 'ec' ]); }, 1000); },
+	function () { return [[ $img5.length, 1 ]]; },
+	function (test) { setTimeout(function () { test([ simg5, 's[1083,699]c' ]); }, 1000); },
+	function () { return [[ $img6.length, 1 ]]; },
+	function (test) { setTimeout(function () { test([ simg6, 's[3000,2008]c' ]); }, 1000); },
+	function () { return [[ $img7.length, 1 ]]; },
+	function (test) { setTimeout(function () { test([ simg7, 'ec' ]); }, 1000); }
+]);
+
+// -----------------------------------------------------------------------------
+
+var siframe1 = '',
+	$iframe1 = $('<iframe>')
+		.attr('src', 'tmp/rhino.txt' + ts)
+		.loaded({
+			complete: function () { siframe1 += 'c'; },
+			success: function () { siframe1 += 's'; },
+			error: function () { siframe1 += 'e'; }
+		}).appendTo('#invisible');
+
+utest('jQuery.loaded.iframe', [
+	function () { return [[ $iframe1.length, 1 ]]; },
+	function (test) { setTimeout(function () { test([ siframe1, 'sc' ]); }, 1000); }
+]);
+
+};
+
+</script>
+</html>

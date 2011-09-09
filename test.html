@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<title></title>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+<script src="jquery.loaded.min.js"></script>
+</head>
+<body>
+<form>
+<p><input type="text" name="url" size="30" value="tmp/rhino1.jpg" />
+   <input type="submit" value="get" /></p>
+</form>
+<div id="res">
+</div>
+<script>
+$('form').submit(function () {
+	$('#res').empty();
+	$('<img>')
+		.attr('src', this.url.value)
+		.attr('width', 200)
+		.loaded({
+			complete: function () {
+				$('<p>').text('complete').appendTo('#res');
+			},
+			success: function () {
+				$('<p>').text('success ' +
+					this.width + '*' + this.height + ' (' +  +
+					this.naturalWidth + '*' + this.naturalHeight + ')').appendTo('#res');
+			},
+			error: function () {
+				$('<p>').text('error').appendTo('#res');
+			}
+		})
+		.appendTo('#res');
+	return false;
+});
+</script>
+</body>
+</html>
