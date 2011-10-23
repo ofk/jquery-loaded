@@ -273,7 +273,7 @@ function setImageNaturalSize(img) {
 		    md = rs.display,
 		    mw = rs.width,
 		    mh = rs.height;
-		rs.display = 'inline_block';
+		rs.display = 'inline-block';
 		rs.width = 'auto';
 		rs.height = 'auto';
 		img.naturalWidth = img.width;
